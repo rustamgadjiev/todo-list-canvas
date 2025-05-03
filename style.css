@@ -1,0 +1,28 @@
+body {
+    display: flex;
+}
+
+#can {
+    width: 600px;
+    height: 500px;
+    border: 2px solid #000;
+}
+
+main {
+    position: relative;
+    margin: 0 auto;
+}
+
+input {
+    outline: none;
+    border: 1px solid #000;
+    padding: 3px 7px;
+    font-size: 18px;
+}
+
+form {
+    display: flex;
+    justify-content: center;
+    padding: 20px 0;
+    border: 2px solid #000;
+}
