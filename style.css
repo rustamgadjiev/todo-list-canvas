@@ -1,11 +1,17 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
     display: flex;
+    font-family: Arial, sans-serif;
 }
 
 #can {
     width: 600px;
     height: 500px;
-    border: 2px solid #000;
 }
 
 main {
@@ -13,16 +19,39 @@ main {
     margin: 0 auto;
 }
 
+.title {
+    text-align: center;
+    margin-top: 20px;
+}
+
 input {
     outline: none;
-    border: 1px solid #000;
+    border: 1px solid rgb(77, 77, 255);
     padding: 3px 7px;
     font-size: 18px;
+    border-radius: 5px 0 0 5px;
+}
+
+button {
+    outline: none;
+    border: 1px solid rgb(77, 77, 255);
+    color: white;
+    background-color: rgb(77, 77, 255);
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
+    padding: 0 7px;
+}
+
+input:focus {
+    border: 1px solid rgb(57, 57, 255);
+}
+
+button:hover {
+    background-color: rgb(57, 57, 255);
 }
 
 form {
     display: flex;
     justify-content: center;
     padding: 20px 0;
-    border: 2px solid #000;
 }
