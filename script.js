@@ -11,6 +11,7 @@ const CHECKBOX_X = 50;
 const DELETE_X = 500;
 
 let tasks = [];
+let shapes = [];
 
 ctx.font = "18px Arial";
 
@@ -18,21 +19,45 @@ canvas.addEventListener("click", function (e) {
   const x = e.offsetX;
   const y = e.offsetY;
 
-  tasks.forEach(function(task, i) {
+  tasks.forEach(function (task, i) {
     const yPos = i * TASK_HEIGHT + TASK_Y - 15;
 
-    if (x >= CHECKBOX_X && x <= CHECKBOX_X + BUTTON_SIZE && y >= yPos && y <= yPos + BUTTON_SIZE) {
+    if (
+      x >= CHECKBOX_X &&
+      x <= CHECKBOX_X + BUTTON_SIZE &&
+      y >= yPos &&
+      y <= yPos + BUTTON_SIZE
+    ) {
       task.complete = !task.complete;
       tasksView();
     }
 
-    if (x >= DELETE_X && x <= DELETE_X + BUTTON_SIZE && y >= yPos && y <= yPos + BUTTON_SIZE) {
-      tasks = tasks.filter(function(t) {
-        return t.id !== task.id
+    if (
+      x >= DELETE_X &&
+      x <= DELETE_X + BUTTON_SIZE &&
+      y >= yPos &&
+      y <= yPos + BUTTON_SIZE
+    ) {
+      tasks = tasks.filter(function (t) {
+        return t.id !== task.id;
       });
+      shapes = shapes.filter(shape => shape.id !== task.id)      
+
+      canvas.style.cursor = "default";
       tasksView();
     }
-  })
+  });
+});
+
+canvas.addEventListener("mousemove", function (e) {
+  const x = e.offsetX;
+  const y = e.offsetY;
+
+  if (shapes.some(shape => x >= shape.x1 && x <= shape.x2 && y >= shape.y1 && y <= shape.y2)) {
+    canvas.style.cursor = 'pointer';
+  } else {
+    canvas.style.cursor = 'default';
+  }
 });
 
 addTaskForm.onsubmit = function (e) {
@@ -61,22 +86,45 @@ addTaskForm.onsubmit = function (e) {
 };
 
 function tasksView() {
+  shapes = [];
   ctx.clearRect(0, 0, 600, 500);
   tasks.forEach(function (task, i) {
     const dynamicPosition = i * TASK_HEIGHT + TASK_Y;
+    const yPos = dynamicPosition - 15;
 
     ctx.beginPath();
     ctx.fillStyle = "#000";
     ctx.fillText(task.text, 100, dynamicPosition);
 
-    completeTaskButton(dynamicPosition, task.complete);
-    deleteTaskButton(dynamicPosition);
+    completeTaskButton(task.complete, yPos);
+    deleteTaskButton(dynamicPosition, yPos);
+
+    if (!shapes.some(shape => shape.x1 === DELETE_X && shape.x2 === DELETE_X + BUTTON_SIZE && shape.y1 === yPos && shape.y2 === (yPos + BUTTON_SIZE))) {
+      shapes.push({
+        id: task.id,
+        x1: DELETE_X,
+        x2: DELETE_X + BUTTON_SIZE,
+        y1: yPos,
+        y2: yPos + BUTTON_SIZE,
+      });
+    }
+
+    if (!shapes.some(shape => shape.x1 === CHECKBOX_X && shape.x2 === CHECKBOX_X + BUTTON_SIZE && shape.y1 === yPos && shape.y2 === (yPos + BUTTON_SIZE))) {
+      shapes.push({
+        id: task.id,
+        x1: CHECKBOX_X,
+        x2: CHECKBOX_X + BUTTON_SIZE,
+        y1: yPos,
+        y2: yPos + BUTTON_SIZE,
+      });
+    }
   });
+
+  console.log(shapes);
+  
 }
 
-function deleteTaskButton(dynamicPosition) {
-  const yPos = dynamicPosition - 15;
-
+function deleteTaskButton(dynamicPosition, yPos) {
   ctx.beginPath();
   ctx.fillStyle = "red";
   ctx.fillRect(500, yPos, BUTTON_SIZE, BUTTON_SIZE);
@@ -91,14 +139,14 @@ function deleteTaskButton(dynamicPosition) {
   ctx.stroke();
 }
 
-function completeTaskButton(dynamicPosition, taskComplete) {
+function completeTaskButton(taskComplete, yPos) {
   ctx.beginPath();
   ctx.strokeStyle = "#000";
   ctx.lineWidth = 2;
-  ctx.strokeRect(50, dynamicPosition - 15, BUTTON_SIZE, BUTTON_SIZE);
+  ctx.strokeRect(50, yPos, BUTTON_SIZE, BUTTON_SIZE);
 
   if (taskComplete) {
     ctx.fillStyle = "greenyellow";
-    ctx.fillRect(50, dynamicPosition - 15, BUTTON_SIZE, BUTTON_SIZE);
+    ctx.fillRect(50, yPos, BUTTON_SIZE, BUTTON_SIZE);
   }
 }
