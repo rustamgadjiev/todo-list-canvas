@@ -15,6 +15,8 @@ let shapes = [];
 
 ctx.font = "18px Arial";
 
+canvas.addEventListener("mousemove", handleMouseMove);
+
 canvas.addEventListener("click", function (e) {
   const x = e.offsetX;
   const y = e.offsetY;
@@ -43,22 +45,22 @@ canvas.addEventListener("click", function (e) {
       });
       shapes = shapes.filter(shape => shape.id !== task.id)      
 
-      canvas.style.cursor = "default";
+      canvas.classList.remove("pointer");
       tasksView();
     }
   });
 });
 
-canvas.addEventListener("mousemove", function (e) {
+function handleMouseMove(e) {
   const x = e.offsetX;
   const y = e.offsetY;
 
-  if (shapes.some(shape => x >= shape.x1 && x <= shape.x2 && y >= shape.y1 && y <= shape.y2)) {
-    canvas.style.cursor = 'pointer';
+  if (shapes.some(shape => x >= shape.x && x <= shape.x + BUTTON_SIZE && y >= shape.y && y <= shape.y + BUTTON_SIZE)) {
+    canvas.classList.add("pointer");
   } else {
-    canvas.style.cursor = 'default';
+    canvas.classList.remove("pointer");
   }
-});
+};
 
 addTaskForm.onsubmit = function (e) {
   e.preventDefault();
@@ -99,29 +101,22 @@ function tasksView() {
     completeTaskButton(task.complete, yPos);
     deleteTaskButton(dynamicPosition, yPos);
 
-    if (!shapes.some(shape => shape.x1 === DELETE_X && shape.x2 === DELETE_X + BUTTON_SIZE && shape.y1 === yPos && shape.y2 === (yPos + BUTTON_SIZE))) {
-      shapes.push({
-        id: task.id,
-        x1: DELETE_X,
-        x2: DELETE_X + BUTTON_SIZE,
-        y1: yPos,
-        y2: yPos + BUTTON_SIZE,
-      });
-    }
-
     if (!shapes.some(shape => shape.x1 === CHECKBOX_X && shape.x2 === CHECKBOX_X + BUTTON_SIZE && shape.y1 === yPos && shape.y2 === (yPos + BUTTON_SIZE))) {
       shapes.push({
         id: task.id,
-        x1: CHECKBOX_X,
-        x2: CHECKBOX_X + BUTTON_SIZE,
-        y1: yPos,
-        y2: yPos + BUTTON_SIZE,
+        x: CHECKBOX_X,
+        y: yPos,
+      });
+    }
+
+    if (!shapes.some(shape => shape.x1 === DELETE_X && shape.x2 === DELETE_X + BUTTON_SIZE && shape.y1 === yPos && shape.y2 === (yPos + BUTTON_SIZE))) {
+      shapes.push({
+        id: task.id,
+        x: DELETE_X,
+        y: yPos,
       });
     }
   });
-
-  console.log(shapes);
-  
 }
 
 function deleteTaskButton(dynamicPosition, yPos) {

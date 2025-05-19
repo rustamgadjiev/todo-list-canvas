@@ -55,3 +55,7 @@ form {
     justify-content: center;
     padding: 20px 0;
 }
+
+canvas.pointer {
+    cursor: pointer;
+}
